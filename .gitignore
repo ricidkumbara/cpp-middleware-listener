@@ -1,4 +1,1 @@
-/bin/*
-/temp
-
-.env
+/build
