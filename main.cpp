@@ -4,6 +4,44 @@
 #include <iostream>
 #include <windows.h>
 #include <thread>
+#include <fstream>
+#include <sstream>
+
+std::string serverIP;
+int serverPort;
+std::string folderDir;
+
+void load_env_config()
+{
+    std::ifstream envFile(".env");
+    if (!envFile)
+    {
+        std::cerr << "Error: .env file not found!" << std::endl;
+        exit(1);
+    }
+
+    std::string line;
+    while (std::getline(envFile, line))
+    {
+        std::istringstream ss(line);
+        std::string key, value;
+        if (std::getline(ss, key, '=') && std::getline(ss, value))
+        {
+            if (key == "SERVER_IP")
+                serverIP = value;
+            else if (key == "SERVER_PORT")
+                serverPort = std::stoi(value);
+            else if (key == "DATA_FOLDER_DIR")
+                folderDir = value;
+        }
+    }
+
+    if (serverIP.empty() || serverPort == 0 || folderDir.empty())
+    {
+        std::cerr << "Error: Invalid .env configuration!" << std::endl;
+        exit(1);
+    }
+}
 
 void process_file_if_changed(
     const fs::directory_entry &file,
@@ -56,17 +94,17 @@ void watch_directory(const std::string &directory)
             process_file_if_changed(*current_file, last_time, last_content);
         }
 
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 }
 
 int main()
 {
-    initialize_socket();
-    const std::string directory = "./temp";
+    load_env_config();
+    initialize_socket(serverIP, serverPort);
     try
     {
-        watch_directory(directory);
+        watch_directory(folderDir);
     }
     catch (const std::exception &ex)
     {
