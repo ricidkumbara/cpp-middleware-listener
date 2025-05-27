@@ -21,6 +21,9 @@ void process_file_if_changed(
             std::string latest_line = getLatestLineFromMultilineString(current_content);
             ParsedRow result = parseLine(latest_line);
             printParsedRow(result);
+
+            std::string message = result.kanban + result.code1;
+            send_msg(message.c_str());
         }
     }
 }
@@ -59,6 +62,7 @@ void watch_directory(const std::string &directory)
 
 int main()
 {
+    initialize_socket();
     const std::string directory = "./temp";
     try
     {
