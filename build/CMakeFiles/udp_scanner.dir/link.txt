@@ -1,2 +1,0 @@
-C:/TDM-GCC-64/bin/ar.exe qc libudp_scanner.a CMakeFiles/udp_scanner.dir/src/udp_scanner.cpp.obj
-C:/TDM-GCC-64/bin/ranlib.exe libudp_scanner.a

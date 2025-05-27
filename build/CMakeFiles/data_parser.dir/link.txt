@@ -1,2 +1,0 @@
-C:/TDM-GCC-64/bin/ar.exe qc libdata_parser.a CMakeFiles/data_parser.dir/src/data_parser.cpp.obj
-C:/TDM-GCC-64/bin/ranlib.exe libdata_parser.a

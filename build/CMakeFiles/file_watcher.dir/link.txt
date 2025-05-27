@@ -1,2 +1,0 @@
-C:/TDM-GCC-64/bin/ar.exe qc libfile_watcher.a CMakeFiles/file_watcher.dir/src/file_watcher.cpp.obj
-C:/TDM-GCC-64/bin/ranlib.exe libfile_watcher.a

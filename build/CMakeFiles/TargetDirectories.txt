@@ -1,6 +1,0 @@
-D:/Projects/TGIDN/cpp-middleware-listener/build/CMakeFiles/file_watcher.dir
-D:/Projects/TGIDN/cpp-middleware-listener/build/CMakeFiles/data_parser.dir
-D:/Projects/TGIDN/cpp-middleware-listener/build/CMakeFiles/udp_scanner.dir
-D:/Projects/TGIDN/cpp-middleware-listener/build/CMakeFiles/app.dir
-D:/Projects/TGIDN/cpp-middleware-listener/build/CMakeFiles/edit_cache.dir
-D:/Projects/TGIDN/cpp-middleware-listener/build/CMakeFiles/rebuild_cache.dir
