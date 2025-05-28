@@ -14,10 +14,8 @@ add_library(udp_sender STATIC src/udp_sender.cpp)
 
 # Create the main executable and link it with the library
 add_executable(app main.cpp)
-target_link_libraries(app file_watcher)
-target_link_libraries(app data_parser)
-target_link_libraries(app udp_sender)
+target_link_libraries(app file_watcher data_parser udp_sender)
+
 if(WIN32)
     target_link_libraries(udp_sender PRIVATE Ws2_32)
 endif()
-
