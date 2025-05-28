@@ -17,4 +17,8 @@ cmake .. -G "MinGW Makefiles"
 REM Build the project
 cmake --build .
 
+REM build receiver
+cd ..
+g++ -static -o .\build\receiver.exe .\src\receiver.cpp -lws2_32
+
 pause
