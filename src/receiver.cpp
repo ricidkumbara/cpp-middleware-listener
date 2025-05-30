@@ -83,7 +83,7 @@ int main() {
     sockaddr_in clientAddr;
     int clientLen = sizeof(clientAddr);
 
-    std::cout << "App is listening...\n";
+    std::cout << "Receiver is running...\n";
 
     while (true) {
         memset(buffer, 0, sizeof(buffer));

@@ -6,6 +6,7 @@
 #include <thread>
 #include <fstream>
 #include <sstream>
+#include <filesystem>
 
 std::string serverIP;
 int serverPort;
@@ -43,11 +44,7 @@ void load_env_config()
     }
 }
 
-void process_file_if_changed(
-    const fs::directory_entry &file,
-    fs::file_time_type &last_time,
-    std::string &last_content)
-{
+void process_file_if_changed(const fs::directory_entry &file, fs::file_time_type &last_time, std::string &last_content) {
     auto current_time = fs::last_write_time(file.path());
     if (current_time != last_time)
     {
@@ -60,10 +57,41 @@ void process_file_if_changed(
             ParsedRow result = parseLine(latest_line);
             printParsedRow(result);
 
-            std::string message = result.kanban + result.code1;
+            // std::string message = result.kanban + result.code1;
+            std::string message = result.kanban;
             send_msg(message.c_str());
         }
     }
+}
+
+std::string formatYYMM(int year, int month) {
+    if (month == 0) {
+        month = 12;
+        year -= 1;
+    }
+
+    std::ostringstream oss;
+    oss << std::setw(2) << std::setfill('0') << (year % 100)
+        << std::setw(2) << std::setfill('0') << month;
+    return oss.str();
+}
+
+std::string buildFolderPath(const std::string& yymm) {
+    std::string path = folderDir;
+    size_t pos = path.find("{var}");
+    if (pos != std::string::npos) {
+        path.replace(pos, 5, yymm);
+    }
+    return path;
+}
+
+int folder_checker(const std::string &dir_path) {
+    if (fs::exists(dir_path) && fs::is_directory(dir_path)) {
+        return 1;
+    }
+    
+    // std::cout << "Directory does NOT exist: " << dir_path << std::endl;
+    return 0;
 }
 
 void watch_directory(const std::string &directory)
@@ -74,7 +102,34 @@ void watch_directory(const std::string &directory)
 
     while (true)
     {
-        auto latest = get_latest_file(directory);
+        std::time_t t = std::time(nullptr);
+        std::tm* now = std::localtime(&t);
+
+        int year = now->tm_year % 100;  // Get last two digits of year
+        int month = now->tm_mon + 1;    // tm_mon is 0-based
+
+        std::ostringstream oss;
+        oss << std::setw(2) << std::setfill('0') << year
+            << std::setw(2) << std::setfill('0') << month;
+
+        std::string current_month = oss.str();
+        std::string folder_path = folderDir;
+        size_t pos = folder_path.find("{var}");
+
+        if (pos != std::string::npos) {
+            folder_path.replace(pos, 5, current_month); // 5 is the length of "{var}"
+        }
+
+        if (folder_checker(folder_path) == 0) {
+            std::string prevYYMM = formatYYMM(year, month - 1);
+            folder_path = buildFolderPath(prevYYMM);
+
+            if (folder_checker(folder_path) == 0) {
+                std::cout << "Directory not found" << std::endl;
+            }
+        }
+        
+        auto latest = get_latest_file(folder_path);
         if (!latest)
         {
             std::cerr << "No files found in directory.\n";

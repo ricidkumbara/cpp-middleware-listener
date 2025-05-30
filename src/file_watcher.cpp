@@ -12,7 +12,7 @@ std::optional<fs::directory_entry> get_latest_file(const std::string &dir_path)
 
     for (const auto &entry : fs::directory_iterator(dir_path))
     {
-        if (fs::is_regular_file(entry))
+        if (fs::is_regular_file(entry) && entry.path().filename() == "KANC.DAT")
         {
             auto mod_time = fs::last_write_time(entry);
             if (!latest_file || mod_time > latest_time)
